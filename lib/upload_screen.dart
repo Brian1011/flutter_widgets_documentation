@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({Key? key}) : super(key: key);
 
   @override
   State<UploadScreen> createState() => _UploadScreenState();
+
+  pickMultipleImages() async {
+    try {
+      final ImagePicker _picker = ImagePicker();
+      // Pick multiple images
+      final List<XFile>? images = await _picker.pickMultiImage();
+      images?.forEach((element) {
+        print(element.path);
+      });
+    } catch (e) {
+      print('***********ERROR');
+    }
+  }
+
+  sendToApi() {}
 }
 
 class _UploadScreenState extends State<UploadScreen> {
@@ -16,7 +32,9 @@ class _UploadScreenState extends State<UploadScreen> {
       ),
       body: Container(
         child: Column(
-          children: [],
+          children: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.add_a_photo))
+          ],
         ),
       ),
     );
