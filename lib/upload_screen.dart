@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -6,24 +7,34 @@ class UploadScreen extends StatefulWidget {
 
   @override
   State<UploadScreen> createState() => _UploadScreenState();
+}
 
+class _UploadScreenState extends State<UploadScreen> {
+  List<XFile>? documentImages = [];
   pickMultipleImages() async {
     try {
       final ImagePicker _picker = ImagePicker();
       // Pick multiple images
       final List<XFile>? images = await _picker.pickMultiImage();
-      images?.forEach((element) {
-        print(element.path);
-      });
+      if (images != null) {
+        documentImages = images;
+        for (var element in images) {
+          print('*********IMAGE PATH');
+          print(element.path);
+        }
+      }
     } catch (e) {
-      print('***********ERROR');
+      print('***********ERROR ${e}');
     }
   }
 
-  sendToApi() {}
-}
+  sendToApi() async {
+    Response response;
+    var dio = Dio();
+    var data = {'data_field_1': 'one', 'images': documentImages};
+    response = await dio.post('');
+  }
 
-class _UploadScreenState extends State<UploadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +48,7 @@ class _UploadScreenState extends State<UploadScreen> {
           children: [
             Center(
                 child: IconButton(
-                    onPressed: () {},
+                    onPressed: pickMultipleImages,
                     icon: const Icon(
                       Icons.add_a_photo,
                       size: 40,
