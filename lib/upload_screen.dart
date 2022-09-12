@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class UploadScreen extends StatefulWidget {
   const UploadScreen({Key? key}) : super(key: key);
 
@@ -8,6 +10,15 @@ class UploadScreen extends StatefulWidget {
 class _UploadScreenState extends State<UploadScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("IMAGES"),
+      ),
+      body: Container(
+        child: Column(
+          children: [],
+        ),
+      ),
+    );
   }
 }
