@@ -31,9 +31,17 @@ class _UploadScreenState extends State<UploadScreen> {
         title: const Text("IMAGES"),
       ),
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         child: Column(
           children: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.add_a_photo))
+            Center(
+                child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.add_a_photo,
+                      size: 40,
+                    )))
           ],
         ),
       ),
