@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,21 +19,16 @@ class _UploadScreenState extends State<UploadScreen> {
     try {
       final ImagePicker _picker = ImagePicker();
       // Pick multiple images
-      final List<XFile>? images = await _picker.pickMultiImage();
+      List<XFile>? images = await _picker.pickMultiImage();
       if (images != null) {
         documentImages = images;
         processedImages = [];
         for (var element in images) {
-          print('*********IMAGE PATH');
-          print(element.path);
-
           // add to multipart file
-          /* processedImages.add(MultipartFile(
+          processedImages.add(MultipartFile(
               File(element.path).readAsBytes().asStream(),
               File(element.path).lengthSync(),
-              filename: element.path.split("/").last));*/
-
-          processedImages.add(await MultipartFile.fromFile(element.path));
+              filename: element.path.split("/").last));
         }
       }
     } catch (e) {
@@ -44,7 +41,9 @@ class _UploadScreenState extends State<UploadScreen> {
     var dio = Dio();
 
     // create data variable
-    var data = {'data_field_1': 'one', 'fileName': processedImages};
+    var data = {'data_field_1': 'one', 'fileName[]': processedImages};
+
+    print(data);
 
     // convert data to form data
     var newData = FormData.fromMap(data);
@@ -56,7 +55,6 @@ class _UploadScreenState extends State<UploadScreen> {
         .then((dataResponse) {
       print(dataResponse);
     }).catchError((error) {
-      print('******************ERROR');
       print(error);
     });
   }
