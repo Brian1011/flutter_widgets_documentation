@@ -7,4 +7,9 @@ String? convertToSentenceCase(String? data) {
 
 main() {
   debugPrint(convertToSentenceCase("hello world"));
+
+  /*
+  * input: hello world
+  * output: Hello world
+  * */
 }
