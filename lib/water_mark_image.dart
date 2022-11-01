@@ -30,6 +30,8 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
 
   addWaterMarkToImage() async {
     try {
+      //clear old image
+      _watermarkedImage = null;
       // create a new image from the image picked from gallery
       ui.Image? originalImage =
           ui.decodeImage(_originalImage!.readAsBytesSync());
@@ -37,7 +39,8 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
       // for adding text over image
       // Draw some text using 24pt arial font
       // 100 is position from x-axis, 120 is position from y-axis
-      ui.drawString(originalImage!, ui.arial_48, 100, 120, 'Think');
+      ui.drawString(originalImage!, ui.arial_48, originalImage.width,
+          originalImage.height, 'Think one');
 
       // Store the watermarked image to a File
       List<int> wmImage = ui.encodePng(originalImage);
@@ -86,9 +89,17 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
             if (_originalImage != null)
               SizedBox(
                   height: 400, width: 400, child: Image.file(_originalImage!)),
-            TextButton(
-                child: const Text("Apply Watermark Over Image"),
-                onPressed: addWaterMarkToImage),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: OutlinedButton(
+                  style: ButtonStyle(
+                      minimumSize:
+                          MaterialStateProperty.all(const Size.fromHeight(40)),
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                      foregroundColor: MaterialStateProperty.all(Colors.white)),
+                  child: const Text("Apply Watermark Over Image"),
+                  onPressed: addWaterMarkToImage),
+            ),
             if (_watermarkedImage != null)
               Padding(
                 padding: const EdgeInsets.all(10.0),
