@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as ui;
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class WaterMarkImage extends StatefulWidget {
   const WaterMarkImage({Key? key}) : super(key: key);
@@ -104,9 +105,14 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
                     // Blur the image
                     ui.gaussianBlur(image, 10);
 
+                    var tempDir = await getExternalStorageDirectory();
+
                     // Save the image to disk as a PNG
-                    File('test.png').writeAsBytesSync(ui.encodePng(image));
-                    _watermarkedImage = File("test.png");
+                    File(tempDir!.path + '/test.png')
+                        .writeAsBytesSync(ui.encodePng(image));
+                    _watermarkedImage = File(tempDir.path + '/test.png');
+
+                    setState(() {});
                   } catch (e) {
                     print('************ERROR');
                     print(e.toString());
