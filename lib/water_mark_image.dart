@@ -15,9 +15,8 @@ class WaterMarkImage extends StatefulWidget {
 
 class _WaterMarkImageState extends State<WaterMarkImage> {
   List<XFile>? documentImages = [];
-  late File _originalImage;
-  late File _watermarkImage;
-  late File _watermarkedImage;
+  File? _originalImage;
+  File? _watermarkedImage;
   final picker = ImagePicker();
   // list of multipart files
   List<MultipartFile> processedImages = [];
@@ -37,7 +36,7 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        child: Column(
+        child: ListView(
           children: [
             Center(
                 child: IconButton(
@@ -51,26 +50,36 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
             ),
             if (_originalImage != null)
               Container(
-                  height: 400, width: 400, child: Image.file(_originalImage)),
+                  height: 400, width: 400, child: Image.file(_originalImage!)),
             TextButton(
                 child: const Text("Apply Watermark Over Image"),
                 onPressed: () async {
-                  ui.Image originalImage =
-                      ui.decodeImage(_originalImage.readAsBytesSync());
+                  try {
+                    ui.Image? originalImage =
+                        ui.decodeImage(_originalImage!.readAsBytesSync());
 
-                  // for adding text over image
-                  // Draw some text using 24pt arial font
-                  // 100 is position from x-axis, 120 is position from y-axis
-                  ui.drawString(
-                      originalImage, ui.arial_24, 100, 120, 'Think Different');
+                    // for adding text over image
+                    // Draw some text using 24pt arial font
+                    // 100 is position from x-axis, 120 is position from y-axis
+                    ui.drawString(originalImage!, ui.arial_24, 0, 0, 'Think');
 
-                  // Store the watermarked image to a File
-                  List<int> wmImage = ui.encodePng(originalImage);
-                  setState(() {
-                    _watermarkedImage =
-                        File.fromRawPath(Uint8List.fromList(wmImage));
-                  });
+                    // Store the watermarked image to a File
+                    List<int> wmImage = ui.encodePng(originalImage);
+                    setState(() {
+                      _watermarkedImage =
+                          File.fromRawPath(Uint8List.fromList(wmImage));
+                    });
+                    print("done");
+                  } catch (e) {
+                    print('************ERROR');
+                    print(e.toString());
+                  }
                 }),
+            if (_watermarkedImage != null)
+              Container(
+                  height: 300,
+                  width: 300,
+                  child: Image.file(_watermarkedImage!)),
           ],
         ),
       ),
