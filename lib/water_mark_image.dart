@@ -13,49 +13,14 @@ class WaterMarkImage extends StatefulWidget {
 
 class _WaterMarkImageState extends State<WaterMarkImage> {
   List<XFile>? documentImages = [];
+  late File _originalImage;
+  final picker = ImagePicker();
   // list of multipart files
   List<MultipartFile> processedImages = [];
-  pickMultipleImages() async {
-    try {
-      final ImagePicker _picker = ImagePicker();
-      // Pick multiple images
-      List<XFile>? images = await _picker.pickMultiImage();
-      if (images != null) {
-        documentImages = images;
-        processedImages = [];
-        for (var element in images) {
-          // add to multipart file
-          processedImages.add(MultipartFile(
-              File(element.path).readAsBytes().asStream(),
-              File(element.path).lengthSync(),
-              filename: element.path.split("/").last));
-        }
-      }
-    } catch (e) {
-      print('***********IMAGES ERROR ${e}');
-    }
-  }
-
-  sendToApi() async {
-    Response response;
-    var dio = Dio();
-
-    // create data variable
-    var data = {'data_field_1': 'one', 'fileName[]': processedImages};
-
-    print(data);
-
-    // convert data to form data
-    var newData = FormData.fromMap(data);
-
-    // call the api with the data
-    await dio
-        .post('http://192.168.100.213:8000/api/multiple-image-upload',
-            data: newData)
-        .then((dataResponse) {
-      print(dataResponse);
-    }).catchError((error) {
-      print(error);
+  pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _originalImage = File(pickedFile!.path);
     });
   }
 
@@ -63,7 +28,7 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("IMAGES"),
+        title: const Text("Watermark Image"),
       ),
       body: Container(
         width: double.infinity,
@@ -72,7 +37,7 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
           children: [
             Center(
                 child: IconButton(
-                    onPressed: pickMultipleImages,
+                    onPressed: pickImage,
                     icon: const Icon(
                       Icons.add_a_photo,
                       size: 40,
@@ -80,13 +45,9 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
             const SizedBox(
               height: 10,
             ),
-            Center(
-                child: IconButton(
-                    onPressed: sendToApi,
-                    icon: const Icon(
-                      Icons.send,
-                      size: 40,
-                    ))),
+            if (_originalImage != null)
+              Container(
+                  height: 400, width: 400, child: Image.file(_originalImage))
           ],
         ),
       ),

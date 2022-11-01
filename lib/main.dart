@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widgets_lessons/upload_screen.dart';
+import 'package:flutter_widgets_lessons/water_mark_image.dart';
 import 'package:flutter_widgets_lessons/widgets/circular_widget.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const UploadScreen());
+        home: const WaterMarkImage());
   }
 }
 
