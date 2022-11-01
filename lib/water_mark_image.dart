@@ -79,7 +79,39 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
               Container(
                   height: 300,
                   width: 300,
-                  child: Image.file(_watermarkedImage!)),
+                  child: Column(
+                    children: [
+                      Image.file(_watermarkedImage!),
+                    ],
+                  )),
+            TextButton(
+                child: const Text("Watermark version 2"),
+                onPressed: () async {
+                  try {
+                    // Create an image
+                    ui.Image image = ui.Image(320, 240);
+
+                    // Fill it with a solid color (blue)
+                    ui.fill(image, ui.getColor(0, 0, 255));
+
+                    // Draw some text using 24pt arial font
+                    ui.drawString(image, ui.arial_24, 0, 0, 'Hello World');
+
+                    // Draw a line
+                    ui.drawLine(image, 0, 0, 320, 240, ui.getColor(255, 0, 0),
+                        thickness: 3);
+
+                    // Blur the image
+                    ui.gaussianBlur(image, 10);
+
+                    // Save the image to disk as a PNG
+                    File('test.png').writeAsBytesSync(ui.encodePng(image));
+                    _watermarkedImage = File("test.png");
+                  } catch (e) {
+                    print('************ERROR');
+                    print(e.toString());
+                  }
+                }),
           ],
         ),
       ),
