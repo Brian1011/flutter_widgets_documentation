@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as ui;
 import 'package:image_picker/image_picker.dart';
 
 class WaterMarkImage extends StatefulWidget {
@@ -14,6 +16,8 @@ class WaterMarkImage extends StatefulWidget {
 class _WaterMarkImageState extends State<WaterMarkImage> {
   List<XFile>? documentImages = [];
   late File _originalImage;
+  late File _watermarkImage;
+  late File _watermarkedImage;
   final picker = ImagePicker();
   // list of multipart files
   List<MultipartFile> processedImages = [];
@@ -47,7 +51,26 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
             ),
             if (_originalImage != null)
               Container(
-                  height: 400, width: 400, child: Image.file(_originalImage))
+                  height: 400, width: 400, child: Image.file(_originalImage)),
+            TextButton(
+                child: const Text("Apply Watermark Over Image"),
+                onPressed: () async {
+                  ui.Image originalImage =
+                      ui.decodeImage(_originalImage.readAsBytesSync());
+
+                  // for adding text over image
+                  // Draw some text using 24pt arial font
+                  // 100 is position from x-axis, 120 is position from y-axis
+                  ui.drawString(
+                      originalImage, ui.arial_24, 100, 120, 'Think Different');
+
+                  // Store the watermarked image to a File
+                  List<int> wmImage = ui.encodePng(originalImage);
+                  setState(() {
+                    _watermarkedImage =
+                        File.fromRawPath(Uint8List.fromList(wmImage));
+                  });
+                }),
           ],
         ),
       ),

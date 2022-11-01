@@ -39,6 +39,7 @@ dependencies:
   # multiple_image_picker: ^0.4.8
   image_picker: ^0.8.5+3
   intl: ^0.17.0
+  image: ^3.1.0
 
 dev_dependencies:
   flutter_test:
