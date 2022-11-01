@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +28,40 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
     });
   }
 
+  addWaterMarkToImage() async {
+    try {
+      // create a new image from the image picked from gallery
+      ui.Image? originalImage =
+          ui.decodeImage(_originalImage!.readAsBytesSync());
+
+      // for adding text over image
+      // Draw some text using 24pt arial font
+      // 100 is position from x-axis, 120 is position from y-axis
+      ui.drawString(originalImage!, ui.arial_48, 100, 120, 'Think');
+
+      // Store the watermarked image to a File
+      List<int> wmImage = ui.encodePng(originalImage);
+
+      // create temporary directory on storage
+      var tempDir = await getExternalStorageDirectory();
+
+      // generate random name
+      Random _random = Random(10);
+      String randomFileName = _random.nextInt(10000000).toString();
+
+      // store new image on filename
+      File(tempDir!.path + '/$randomFileName.png')
+          .writeAsBytesSync(ui.encodePng(originalImage));
+
+      setState(() {
+        _watermarkedImage = File(tempDir.path + '/$randomFileName.png');
+      });
+      print("done");
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,74 +84,16 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
               height: 10,
             ),
             if (_originalImage != null)
-              Container(
+              SizedBox(
                   height: 400, width: 400, child: Image.file(_originalImage!)),
             TextButton(
                 child: const Text("Apply Watermark Over Image"),
-                onPressed: () async {
-                  try {
-                    ui.Image? originalImage =
-                        ui.decodeImage(_originalImage!.readAsBytesSync());
-
-                    // for adding text over image
-                    // Draw some text using 24pt arial font
-                    // 100 is position from x-axis, 120 is position from y-axis
-                    ui.drawString(originalImage!, ui.arial_24, 0, 0, 'Think');
-
-                    // Store the watermarked image to a File
-                    List<int> wmImage = ui.encodePng(originalImage);
-                    setState(() {
-                      _watermarkedImage =
-                          File.fromRawPath(Uint8List.fromList(wmImage));
-                    });
-                    print("done");
-                  } catch (e) {
-                    print('************ERROR');
-                    print(e.toString());
-                  }
-                }),
+                onPressed: addWaterMarkToImage),
             if (_watermarkedImage != null)
-              Container(
-                  height: 300,
-                  width: 300,
-                  child: Column(
-                    children: [
-                      Image.file(_watermarkedImage!),
-                    ],
-                  )),
-            TextButton(
-                child: const Text("Watermark version 2"),
-                onPressed: () async {
-                  try {
-                    // Create an image
-                    ui.Image image = ui.Image(320, 240);
-
-                    // Fill it with a solid color (blue)
-                    ui.fill(image, ui.getColor(0, 0, 255));
-
-                    // Draw some text using 24pt arial font
-                    ui.drawString(image, ui.arial_24, 0, 0, 'Hello World');
-
-                    // Draw a line
-                    ui.drawLine(image, 0, 0, 320, 240, ui.getColor(255, 0, 0),
-                        thickness: 3);
-
-                    // Blur the image
-                    ui.gaussianBlur(image, 10);
-
-                    var tempDir = await getExternalStorageDirectory();
-
-                    // Save the image to disk as a PNG
-                    File(tempDir!.path + '/test.png')
-                        .writeAsBytesSync(ui.encodePng(image));
-                    _watermarkedImage = File(tempDir.path + '/test.png');
-
-                    setState(() {});
-                  } catch (e) {
-                    print('************ERROR');
-                    print(e.toString());
-                  }
-                }),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.file(_watermarkedImage!),
+              ),
           ],
         ),
       ),
