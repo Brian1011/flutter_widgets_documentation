@@ -6,4 +6,6 @@ int getRandomNumber() {
   return random.nextInt(1000);
 }
 
-main() {}
+main() {
+  print(getRandomNumber().toString());
+}
