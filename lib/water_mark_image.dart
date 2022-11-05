@@ -39,8 +39,7 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
       // for adding text over image
       // Draw some text using 24pt arial font
       // 100 is position from x-axis, 120 is position from y-axis
-      ui.drawString(originalImage!, ui.arial_48, originalImage.width,
-          originalImage.height, 'Think one');
+      ui.drawString(originalImage!, ui.arial_48, 0, 0, 'Think one');
 
       // Store the watermarked image to a File
       List<int> wmImage = ui.encodePng(originalImage);
@@ -49,8 +48,8 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
       var tempDir = await getExternalStorageDirectory();
 
       // generate random name
-      Random _random = Random(10);
-      String randomFileName = _random.nextInt(10000000).toString();
+      Random _random = Random();
+      String randomFileName = _random.nextInt(10000).toString();
 
       // store new image on filename
       File(tempDir!.path + '/$randomFileName.png')
