@@ -39,7 +39,15 @@ class _WaterMarkImageState extends State<WaterMarkImage> {
       // for adding text over image
       // Draw some text using 24pt arial font
       // 100 is position from x-axis, 120 is position from y-axis
-      ui.drawString(originalImage!, ui.arial_48, 0, 0, 'Think one');
+      print(originalImage?.width.toString());
+      print(originalImage?.width.round().toString());
+      print("think one".length);
+      ui.drawString(
+          originalImage!,
+          ui.arial_48,
+          (originalImage.width.round() - 400),
+          (originalImage.height.round() - 50),
+          'Think one');
 
       // Store the watermarked image to a File
       List<int> wmImage = ui.encodePng(originalImage);
